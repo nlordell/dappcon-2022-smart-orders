@@ -1,0 +1,15 @@
+{
+  "name": "smart-order",
+  "private": true,
+  "scripts": {
+    "deploy": "hardhat run scripts/deploy.js --network rinkeby",
+    "place-order": "hardhat run scripts/placeOrder.js --network rinkeby",
+    "cancel-order": "hardhat run scripts/cancelOrder.js --network rinkeby",
+    "test": "hardhat test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^1.0.1",
+    "hardhat": "^2.11.1",
+    "node-fetch": "^2.6.7"
+  }
+}
