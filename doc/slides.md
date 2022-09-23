@@ -44,7 +44,7 @@ This is because Smart Contracts have no "private keys", to use for elliptic curv
 Meaning, that Smart Contracts really be used for ECDSA signing.
 In order to work around this, a different signature is needed that does not depend on elliptic curve cryptography.
 
-The solution was to standardize a new form of on-chain signature verification for Smart Contracts: [ERC-1271](https://eips.ethereum.org/EIPS/eip-1271).
+The solution was to standardise a new form of on-chain signature verification for Smart Contracts: [ERC-1271](https://eips.ethereum.org/EIPS/eip-1271).
 This is a simple standard that requires Smart Contracts that want to perform signature verification to implement a `isValidSignature` method:
 
 ```solidity
@@ -62,7 +62,7 @@ This arbitrary length byte array allows all kinds of data to be encoded and pass
 Also, since this is just a Smart Contract `CALL`, the logic that verifies the signature can be arbitrary and make use of any on-chain state that it wants.
 
 With respect to CoW Protocol orders, the flow now becomes:
-1. Like before, prepare your order, i.e. the strucuted order data
+1. Like before, prepare your order, i.e. the structured order data
 2. Like before, hash this structured data into a 32-byte digest
 3. Unlike before, call the `isValidSignature` on the Smart Contract signer instead of performing the usual ECDSA signature recovery and validation
 
@@ -70,24 +70,24 @@ With respect to CoW Protocol orders, the flow now becomes:
 
 The spirit of ERC-1271 support in CoW Protocol was to enable Smart Contract wallets like to be able to trade on CoW Protocol and CoW Swap.
 Each individual Smart Contract wallet would then be able to implement their own signature validation scheme, for example:
-* Wallet owner indicates that some hash is tructed by executing an onchain transaction
+* Wallet owner indicates that some hash is trusted by executing an on-chain transaction
 * Wallet accepts all signatures from a specific domain
 * Owner off-chain signatures that are verified by the Smart Contract wallet
 
 Specifically, the Safe v1.3 uses the latter for verifying signatures.
-Because the Safe uses off-chain owner ECDSA signatures for signature verification, this means that it is possible to trade "gas-lessly" on CoW Protocol with the Safe.
+Because the Safe uses off-chain owner ECDSA signatures for signature verification, this means that it is possible to trade "gas-less-ly" on CoW Protocol with the Safe.
 
 ## Safe
 
 Safe signature verification is done on a special EIP-712 `SafeMessage`.
 This just wraps the same order digest that we used before for both ECDSA and ERC-1271 signature verification.
 This makes the process very similar to what we had before for EOAs:
-1. Like before, prepare your order, i.e. the strucuted order data
+1. Like before, prepare your order, i.e. the structured order data
 2. Like before, hash this structured data into a 32-byte digest
 3. Unlike before, we "wrap" this digest in a `SafeMessage`
 4. Like before, we generate an ECDSA signature with our EOA's private key
 
-For multi-owner Safes, you would just collect a bunch of these signatures and concatinate them together.
+For multi-owner Safes, you would just collect a bunch of these signatures and concatenate them together.
 
 For verification, the CoW Protocol settlement contract would call the ERC-1271 `isValidSignature` function implemented in the Safe Smart Contract and:
 1. Pass in the concatenated owner ECDSA signatures as the `signature` bytes
@@ -96,7 +96,7 @@ For verification, the CoW Protocol settlement contract would call the ERC-1271 `
   2. Verify that the signer is an owner
 3. And finally, to verify the signature, it would make sure that the total number of signatures it got is greater than the owner threshold.
 
-We see that this already works today in CoW Protocol, for example order [71cff264](https://barn.explorer.cow.fi/goerli/orders/0x71cff2646c6ca7b26844fdada874db8f20ff10cc831ffc8ba381b77dc185279fd64d6de7a7630d7a63f133b882ac44427d88555562e77d0e).
+We see that this already works today in CoW Protocol, for example order [`71cff264`](https://barn.explorer.cow.fi/goerli/orders/0x71cff2646c6ca7b26844fdada874db8f20ff10cc831ffc8ba381b77dc185279fd64d6de7a7630d7a63f133b882ac44427d88555562e77d0e).
 
 ## Smart Orders
 
@@ -104,7 +104,7 @@ Smart Order leverage the same signature verification standard, ERC-1271, and wor
 1. You would deposit some tokens that you want to trade into the Smart Order
 2. Implement ERC-1271 signature verification
 
-**But**, instead of verifying owner ECDSA signatures, you would instead add some custom on-chain validataion logic.
+**But**, instead of verifying owner ECDSA signatures, you would instead add some custom on-chain validation logic.
 And **that's it**!
 It is, in fact conceptually very simple, and takes advantage of just how flexible and powerful the ERC-1271 signature verification scheme is.
 
@@ -115,9 +115,9 @@ Currently, this is not supported natively by CoW Protocol, which only supports o
 Thanks to ERC-1271, creating such an order and _extending_ the CoW Protocol becomes possible.
 All we need to do is add a check in the `isValidSignature` implementation that the current block timestamp is older than some `validFrom` value.
 The CoW Protocol services constantly simulate `isValidSignature` before each batch, meaning that the order would get automatically picked up and included in a batch auction once it matures.
-Since the signature validation would revert if the check is not met, this means that we would effectively have a **trustless** check preventing the order from being filled.
+Since the signature validation would revert if the check is not met, this means that we would effectively have a **trust-less** check preventing the order from being filled.
 Even if a malicious solver would try to include a GAT order before it was mature, the CoW Protocol settlement contract would prevent it from executing a trade because the `isValidSignature` call would fail.
-Trustless protocol extensions, nice!
+Trust-less protocol extensions, nice!
 
 Code walkthrough...
 
@@ -134,16 +134,16 @@ After this `place` transaction is executed, the order is ready!
 For the order to trade:
 1. The trader can then let the CoW Protocol know about the order by sending the order details to the API
 2. The CoW Protocol would, before every auction, check wether or not the order is valid by simulating a `isValidSignature` call
-  * Internally, the `isValidSignature` call would compare the current block timestamp to the order's condfigured `validFrom` and only validate the signature once this is the case.
+  * Internally, the `isValidSignature` call would compare the current block timestamp to the order's configured `validFrom` and only validate the signature once this is the case.
 3. Once the order matures, it will automatically be included in the next auction. This would make the order available to the CoW Protocol solvers for trading.
 4. The CoW Protocol contract would call the `isValidSignature` on-chain
-  * This ensures that we truly have a **trustless** order validity check, regardless of whether or not the protocol or solvers misbehave.
+  * This ensures that we truly have a **trust-less** order validity check, regardless of whether or not the protocol or solvers misbehave.
 
 ### Getting Rid of the API Call
 
 We can also add an `OrderPlacement` event emission to the factory contract.
 This would cause GAT order placement to additionally emit an on-chain event.
-We are currently building a new Ether trading flow on top of CoW Protocol and will start indexing these events in order to automatically add orders created this way to the orderbook.
+We are currently building a new Ether trading flow on top of CoW Protocol and will start indexing these events in order to automatically add orders created this way to the order-book.
 This would mean that traders no longer need to make an HTTP request to the API to add an order to it, but instead will have the order added automatically.
 
 ## Additional Use Cases
@@ -160,4 +160,4 @@ GAT orders aren't the only thing that is possible:
 What, I believe is so interesting about Smart Orders is that they don't require any special integration.
 You just need an on-chain contract that follows the ERC-1271 signature verification standard!
 This allows anyone to extend CoW Protocol to add special orders with all kinds of on-chain logic without requiring any special integration.
-This democratises the ability of external parties to make special orders with special scemantics that perfectly suits their needs, while having strong on-chain guarantees that the rules of their orders are being followed.
+This democratises the ability of external parties to make special orders with special semantics that perfectly suits their needs, while having strong on-chain guarantees that the rules of their orders are being followed.
