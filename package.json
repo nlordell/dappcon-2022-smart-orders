@@ -2,14 +2,30 @@
   "name": "smart-order",
   "private": true,
   "scripts": {
-    "deploy": "hardhat run scripts/deploy.js --network rinkeby",
-    "place-order": "hardhat run scripts/placeOrder.js --network rinkeby",
-    "cancel-order": "hardhat run scripts/cancelOrder.js --network rinkeby",
+    "deploy": "hardhat run scripts/deploy.js --network goerli",
+    "place-order": "hardhat run scripts/placeOrder.js --network goerli",
+    "cancel-order": "hardhat run scripts/cancelOrder.js --network goerli",
     "test": "hardhat test"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^1.0.1",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "hardhat": "^2.11.1",
     "node-fetch": "^2.6.7"
+  },
+  "dependencies": {
+    "@ethersproject/providers": "^5.7.1",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.3",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.6",
+    "@nomiclabs/hardhat-ethers": "^2.1.1",
+    "@nomiclabs/hardhat-etherscan": "^3.0.0",
+    "@typechain/ethers-v5": "^10.1.0",
+    "@typechain/hardhat": "^6.1.2",
+    "@types/mocha": "^9.1.0",
+    "chai": "^4.2.0",
+    "ethers": "^5.7.1",
+    "hardhat-gas-reporter": "^1.0.8",
+    "solidity-coverage": "^0.8.1",
+    "typechain": "^8.1.0",
+    "typescript": ">=4.5.0"
   }
 }
