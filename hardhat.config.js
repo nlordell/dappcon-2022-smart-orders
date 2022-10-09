@@ -1,5 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
 
+const ONE_KEY = "0x0000000000000000000000000000000000000000000000000000000000000001";
 const { INFURA_PROJECT_ID, PRIVATE_KEY } = process.env;
 
 module.exports = {
@@ -7,7 +8,7 @@ module.exports = {
   networks: {
     goerli: {
       url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}`,
-      accounts: [PRIVATE_KEY],
+      accounts: [PRIVATE_KEY ?? ONE_KEY],
     },
   },
 };
