@@ -8,7 +8,7 @@ const { ethers } = require("hardhat");
 
 const ONE_HOUR = 60 * 60;
 
-describe("GATOrder", function () {
+describe("GATOrders", function () {
   async function fixture() {
     const [_deployer, owner] = await ethers.getSigners();
 

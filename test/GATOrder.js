@@ -3,6 +3,7 @@ const {
   loadFixture,
 } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
 const ONE_HOUR = 60 * 60;
 const ERC1271_MAGIC_VALUE = "0x1626ba7e";

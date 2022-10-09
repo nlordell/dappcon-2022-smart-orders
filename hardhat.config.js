@@ -1,6 +1,6 @@
-require("@nomicfoundation/hardhat-toolbox")
+require("@nomicfoundation/hardhat-toolbox");
 
-const { INFURA_PROJECT_ID, PRIVATE_KEY } = process.env
+const { INFURA_PROJECT_ID, PRIVATE_KEY } = process.env;
 
 module.exports = {
   solidity: "0.8.17",
@@ -10,4 +10,4 @@ module.exports = {
       accounts: [PRIVATE_KEY],
     },
   },
-}
+};
